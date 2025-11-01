@@ -18,13 +18,7 @@ YieldDonating strategies are designed to:
 2. Install [Node.js](https://nodejs.org/en/download/package-manager/)
 3. Clone this repository:
 ```sh
-git clone --recursive https://github.com/golemfoundation/octant-v2-tokenized-strategy-foundry-mix
-cd octant-v2-tokenized-strategy-foundry-mix
-
-# TEMPORARY: Install octant-v2-core dependencies (needed until remapping issue with forge is resolved)
-cd lib/octant-v2-core && forge soldeer install && cd ../..
-
-forge install
+git clone git@github.com:golemfoundation/octant-v2-strategy-foundry-mix.git
 ```
 
 4. Install dependencies:
