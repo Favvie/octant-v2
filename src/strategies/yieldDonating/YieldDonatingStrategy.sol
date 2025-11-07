@@ -82,7 +82,7 @@ contract YieldDonatingStrategy is BaseStrategy {
      * @param _amount The amount of 'asset' that the strategy can attempt
      * to deploy.
      */
-    function _deployFunds(uint256 _amount) internal override {
+    function _deployFunds(uint256 _amount) internal virtual override {
         // TODO: implement your logic to deploy funds into yield source
         // Example for AAVE:
         // yieldSource.supply(address(asset), _amount, address(this), 0);
@@ -111,7 +111,7 @@ contract YieldDonatingStrategy is BaseStrategy {
      *
      * @param _amount, The amount of 'asset' to be freed.
      */
-    function _freeFunds(uint256 _amount) internal override {
+    function _freeFunds(uint256 _amount) internal virtual override {
         // TODO: implement your logic to free funds from yield source
         // Example for AAVE:
         // yieldSource.withdraw(address(asset), _amount, address(this));
@@ -142,7 +142,7 @@ contract YieldDonatingStrategy is BaseStrategy {
      * @return _totalAssets A trusted and accurate account for the total
      * amount of 'asset' the strategy currently holds including idle funds.
      */
-    function _harvestAndReport() internal override returns (uint256 _totalAssets) {
+    function _harvestAndReport() internal virtual override returns (uint256 _totalAssets) {
         // TODO: Implement harvesting logic
         // 1. Amount of assets claimable from the yield source
         // 2. Amount of assets idle in the strategy
