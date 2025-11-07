@@ -73,6 +73,12 @@ contract AaveV3YieldDonatingStrategy is YieldDonatingStrategy {
      * @param _amount The amount of 'asset' to deploy
      */
     function _deployFunds(uint256 _amount) internal override {
+        // Ensure sufficient allowance (safeguard in case of any approval issues)
+        uint256 currentAllowance = ERC20(asset).allowance(address(this), address(yieldSource));
+        if (currentAllowance < _amount) {
+            ERC20(asset).forceApprove(address(yieldSource), type(uint256).max);
+        }
+
         // Supply assets to Aave pool
         // The pool will mint aTokens 1:1 to this contract
         IPool(address(yieldSource)).supply(address(asset), _amount, address(this), 0);
