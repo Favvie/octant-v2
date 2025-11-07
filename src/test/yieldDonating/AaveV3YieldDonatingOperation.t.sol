@@ -5,6 +5,7 @@ import "forge-std/console2.sol";
 import {AaveV3YieldDonatingSetup} from "./AaveV3YieldDonatingSetup.sol";
 
 import {IStrategyInterface} from "../../interfaces/IStrategyInterface.sol";
+import {ITokenizedStrategy} from "@octant-core/core/interfaces/ITokenizedStrategy.sol";
 
 contract AaveV3YieldDonatingOperationTest is AaveV3YieldDonatingSetup {
     function setUp() public override {
@@ -15,7 +16,7 @@ contract AaveV3YieldDonatingOperationTest is AaveV3YieldDonatingSetup {
         assertTrue(address(0) != address(strategy));
         assertEq(strategy.asset(), address(asset));
         assertEq(strategy.management(), management);
-        assertEq(strategy.performanceFeeRecipient(), dragonRouter);
+        assertEq(ITokenizedStrategy(address(strategy)).dragonRouter(), dragonRouter);
         assertEq(strategy.keeper(), keeper);
     }
 
