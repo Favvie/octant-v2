@@ -55,9 +55,10 @@ contract AaveV3YieldDonatingSetup is Test, IEvents {
 
     function setUp() public virtual {
         // Fork mainnet for testing with real Aave contracts
-        // You can override this in specific tests for other networks
+        // Pinning to a specific block ensures consistent test results
+        // Block 21100000 is from November 2024, known to have working Aave v3 state
         string memory rpcUrl = vm.envOr("ETH_RPC_URL", string("https://rpc.ankr.com/eth"));
-        vm.createSelectFork(rpcUrl);
+        vm.createSelectFork(rpcUrl, 21100000);
 
         // Use USDC and Aave v3 on mainnet by default
         asset = ERC20(USDC_MAINNET);
