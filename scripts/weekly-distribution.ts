@@ -131,13 +131,13 @@ function createDistributionConfig(
 }
 
 /**
- * Calculate yield allocation
+ * Calculate yield allocation for PaymentSplitter
  */
 async function calculateAllocation(): Promise<void> {
-  console.log('💰 Calculating yield allocation...\n');
+  console.log('💰 Calculating PaymentSplitter allocation...\n');
 
   try {
-    execSync('npm run calculate-distribution', {
+    execSync('npm run calculate-payment-splitter', {
       cwd: path.join(__dirname),
       stdio: 'inherit'
     });
@@ -148,104 +148,121 @@ async function calculateAllocation(): Promise<void> {
 }
 
 /**
- * Generate Merkle tree and proofs
+ * Load distribution data for deployment
  */
-async function generateMerkleTree(weekNumber: number): Promise<void> {
-  console.log('🌳 Generating Merkle tree...\n');
+function loadDistributionData(weekNumber: number): any {
+  const dataPath = path.join(__dirname, `../data/distributions/week-${weekNumber}-payment-splitter.json`);
 
-  try {
-    execSync(`npm run generate-distribution-merkle ${weekNumber}`, {
-      cwd: path.join(__dirname),
-      stdio: 'inherit'
-    });
-  } catch (error) {
-    console.error('❌ Failed to generate Merkle tree');
-    throw error;
+  if (!fs.existsSync(dataPath)) {
+    throw new Error(`Distribution data not found at ${dataPath}`);
   }
+
+  return JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
 }
 
 /**
- * Load Merkle root for on-chain deployment
- */
-function loadMerkleRoot(weekNumber: number): string {
-  const rootPath = path.join(__dirname, `../data/merkle-trees/epoch-${weekNumber}-root.txt`);
-
-  if (!fs.existsSync(rootPath)) {
-    throw new Error(`Merkle root not found at ${rootPath}`);
-  }
-
-  return fs.readFileSync(rootPath, 'utf-8').trim();
-}
-
-/**
- * Generate deployment instructions
+ * Generate deployment instructions for PaymentSplitter
  */
 function generateDeploymentInstructions(
   weekNumber: number,
   totalYield: bigint,
   assetAddress: string,
-  merkleRoot: string
+  distributionData: any
 ): void {
+  const { addresses, githubNames, shares } = distributionData.deployment;
+
   const instructions = `
 ╔════════════════════════════════════════════════════════════════╗
-║           WEEK ${weekNumber} DISTRIBUTION - DEPLOYMENT READY           ║
+║    WEEK ${weekNumber} DISTRIBUTION - OCTANT PAYMENTSPLITTER        ║
 ╚════════════════════════════════════════════════════════════════╝
 
-📋 NEXT STEPS:
+🎯 OCTANT INTEGRATION
+This uses Octant's PaymentSplitter infrastructure:
+- PaymentSplitterFactory for gas-efficient deployment
+- YieldDonatingStrategy's dragonRouter integration
+- Battle-tested PaymentSplitter contract
 
-1️⃣  Transfer yield to YieldDistributor contract:
+📋 DEPLOYMENT STEPS:
 
-   Amount: ${totalYield.toString()} (raw)
-   Asset:  ${assetAddress}
+1️⃣  Approve WeeklyPaymentSplitterManager to spend dragonRouter shares:
 
-   Example (using cast):
-   cast send ${assetAddress} \\
-     "transfer(address,uint256)" \\
-     $YIELD_DISTRIBUTOR_ADDRESS \\
-     ${totalYield.toString()} \\
+   As dragonRouter owner:
+   cast send $STRATEGY_ADDRESS \\
+     "approve(address,uint256)" \\
+     $WEEKLY_MANAGER_ADDRESS \\
+     999999999999999999999999 \\
+     --rpc-url $RPC_URL \\
+     --private-key $DRAGON_ROUTER_KEY
+
+2️⃣  Create weekly distribution (deploys PaymentSplitter + redeems shares):
+
+   Arrays are in: data/distributions/week-${weekNumber}-payment-splitter.json
+
+   cast send $WEEKLY_MANAGER_ADDRESS \\
+     "createWeeklyDistribution(uint256,address[],string[],uint256[])" \\
+     ${weekNumber} \\
+     "[${addresses.map(a => `"${a}"`).join(',')}]" \\
+     "[${githubNames.map(n => `"${n}"`).join(',')}]" \\
+     "[${shares.join(',')}]" \\
      --rpc-url $RPC_URL \\
      --private-key $PRIVATE_KEY
 
-2️⃣  Create epoch on YieldDistributor:
+   This will:
+   - Redeem dragonRouter's ${totalYield.toString()} strategy shares
+   - Deploy new PaymentSplitter via Octant's factory
+   - Fund PaymentSplitter with redeemed assets
+   - Record distribution in WeeklyPaymentSplitterManager
 
-   Merkle Root: ${merkleRoot}
-   Epoch ID:    ${weekNumber}
+3️⃣  Get deployed PaymentSplitter address:
 
-   Example (using cast):
-   cast send $YIELD_DISTRIBUTOR_ADDRESS \\
-     "createEpoch(bytes32,uint256,address,uint256,uint256)" \\
-     ${merkleRoot} \\
-     ${totalYield.toString()} \\
-     ${assetAddress} \\
-     $(date +%s) \\
-     0 \\
+   cast call $WEEKLY_MANAGER_ADDRESS \\
+     "getPaymentSplitter(uint256)" \\
+     ${weekNumber} \\
+     --rpc-url $RPC_URL
+
+4️⃣  Notify contributors:
+
+   Contributors can claim using Octant's PaymentSplitter:
+
+   Example claim (as contributor):
+   cast send $PAYMENT_SPLITTER_ADDRESS \\
+     "release(address,address)" \\
+     $ASSET_ADDRESS \\
+     $CONTRIBUTOR_ADDRESS \\
      --rpc-url $RPC_URL \\
-     --private-key $PRIVATE_KEY
+     --private-key $CONTRIBUTOR_KEY
 
-3️⃣  Notify contributors:
+5️⃣  Monitor claims:
 
-   Proof files are in:
-   data/merkle-trees/epoch-${weekNumber}-proofs/
+   Check releasable amount for a contributor:
+   cast call $PAYMENT_SPLITTER_ADDRESS \\
+     "releasable(address,address)" \\
+     $ASSET_ADDRESS \\
+     $CONTRIBUTOR_ADDRESS \\
+     --rpc-url $RPC_URL
 
-   Share these files with contributors via:
-   - IPFS
-   - GitHub repository
-   - Discord/Telegram bot
-   - Email
+═══════════════════════════════════════════════════════════════
 
-4️⃣  Update frontend (if applicable):
+📊 DISTRIBUTION SUMMARY:
 
-   Add epoch ${weekNumber} to the UI with:
-   - Merkle root: ${merkleRoot}
-   - Total amount: ${totalYield.toString()}
+Total Contributors: ${distributionData.stats.totalContributors}
+Total Shares: ${distributionData.totalShares}
+Total Yield: ${ethers.formatUnits(totalYield, distributionData.config.decimals)} ${distributionData.config.assetSymbol}
+
+Top Contributors:
+${distributionData.contributors.slice(0, 5).map((c: any, i: number) =>
+  `${i + 1}. ${c.github.padEnd(20)} ${c.shares.toString().padStart(6)} shares (${c.percentage.toFixed(2)}%)`
+).join('\n')}
 
 ═══════════════════════════════════════════════════════════════
 
 📂 Generated Files:
-   └─ data/distributions/epoch-${weekNumber}.json
-   └─ data/merkle-trees/epoch-${weekNumber}-merkle.json
-   └─ data/merkle-trees/epoch-${weekNumber}-root.txt
-   └─ data/merkle-trees/epoch-${weekNumber}-proofs/*.json
+   └─ data/distributions/week-${weekNumber}-payment-splitter.json
+
+🎊 OCTANT FEATURES USED:
+   ✅ PaymentSplitterFactory (gas-efficient proxy deployment)
+   ✅ PaymentSplitter (pull payment model)
+   ✅ YieldDonatingStrategy (dragonRouter integration)
 
 ═══════════════════════════════════════════════════════════════
 `;
@@ -295,17 +312,14 @@ async function main() {
       allocationStrategy
     });
 
-    // Step 4: Calculate allocation
+    // Step 4: Calculate allocation for PaymentSplitter
     await calculateAllocation();
 
-    // Step 5: Generate Merkle tree
-    await generateMerkleTree(weekNumber);
+    // Step 5: Load distribution data
+    const distributionData = loadDistributionData(weekNumber);
 
-    // Step 6: Load Merkle root
-    const merkleRoot = loadMerkleRoot(weekNumber);
-
-    // Step 7: Generate deployment instructions
-    generateDeploymentInstructions(weekNumber, totalYield, assetAddress, merkleRoot);
+    // Step 6: Generate deployment instructions
+    generateDeploymentInstructions(weekNumber, totalYield, assetAddress, distributionData);
 
     console.log('✅ Weekly distribution preparation complete!\n');
     process.exit(0);
