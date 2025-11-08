@@ -1,0 +1,12 @@
+{
+  "github": "charlie",
+  "wallet": "0x1234567890123456789012345678901234567890",
+  "score": 23,
+  "leaf": "0x569114296f4ba921906bdcf19d9fac74e34819b28a31f82b213b9036e7dd782c",
+  "proof": [
+    "0x2e7793b5e1649b64cc279423ad202311ff6aca6afb2dff4db48e65388c3051c7",
+    "0x966b28f8fe59e61a816c26390f41a2f7e2ceefd37149b5e01c669fd0a23bf59d"
+  ],
+  "root": "0x66cf6e13520f475a680ae53236fde252f116b6e601dea9df7d31950f514136b4",
+  "howToUse": "Pass proof array to smart contract verifyContributor() function"
+}

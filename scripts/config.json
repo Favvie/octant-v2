@@ -1,0 +1,55 @@
+{
+  "trackedRepos": [
+    {
+      "owner": "ethereum",
+      "repo": "go-ethereum",
+      "description": "Official Go implementation of Ethereum"
+    },
+    {
+      "owner": "foundry-rs",
+      "repo": "foundry",
+      "description": "Foundry toolkit for Ethereum"
+    },
+    {
+      "owner": "ethereum",
+      "repo": "solidity",
+      "description": "Solidity programming language"
+    },
+    {
+      "owner": "OpenZeppelin",
+      "repo": "openzeppelin-contracts",
+      "description": "OpenZeppelin smart contracts"
+    },
+    {
+      "owner": "Uniswap",
+      "repo": "v3-core",
+      "description": "Uniswap V3 core contracts"
+    },
+    {
+      "owner": "aave",
+      "repo": "aave-v3-core",
+      "description": "Aave V3 protocol"
+    },
+    {
+      "owner": "yearn",
+      "repo": "yearn-vaults-v3",
+      "description": "Yearn Vaults V3"
+    },
+    {
+      "owner": "ethereum",
+      "repo": "consensus-specs",
+      "description": "Ethereum consensus specifications"
+    }
+  ],
+  "scoring": {
+    "commitWeight": 1,
+    "prWeight": 3,
+    "issueWeight": 1,
+    "reviewWeight": 2
+  },
+  "timeFrame": {
+    "months": 6,
+    "description": "Track contributions from the last 6 months"
+  },
+  "minScore": 5
+}

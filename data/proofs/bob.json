@@ -1,0 +1,11 @@
+{
+  "github": "bob",
+  "wallet": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  "score": 36,
+  "leaf": "0x966b28f8fe59e61a816c26390f41a2f7e2ceefd37149b5e01c669fd0a23bf59d",
+  "proof": [
+    "0xe729e49a1f4eac456822669cbd86f92b238ee6cf34c5f3344c8c201a20e35fe5"
+  ],
+  "root": "0x66cf6e13520f475a680ae53236fde252f116b6e601dea9df7d31950f514136b4",
+  "howToUse": "Pass proof array to smart contract verifyContributor() function"
+}

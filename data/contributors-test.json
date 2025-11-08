@@ -1,0 +1,76 @@
+{
+  "lastUpdated": "2025-11-07T10:00:00.000Z",
+  "config": {
+    "timeFrame": {
+      "months": 6
+    },
+    "minScore": 5,
+    "trackedRepos": 8
+  },
+  "stats": {
+    "totalContributors": 5,
+    "eligibleContributors": 3
+  },
+  "contributors": [
+    {
+      "github": "alice",
+      "wallet": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "commits": 20,
+      "prs": 5,
+      "issues": 3,
+      "reviews": 8,
+      "totalScore": 54,
+      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "eligible": true,
+      "repos": ["ethereum/go-ethereum", "foundry-rs/foundry"]
+    },
+    {
+      "github": "bob",
+      "wallet": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      "commits": 15,
+      "prs": 3,
+      "issues": 2,
+      "reviews": 5,
+      "totalScore": 36,
+      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "eligible": true,
+      "repos": ["ethereum/solidity"]
+    },
+    {
+      "github": "charlie",
+      "wallet": "0x1234567890123456789012345678901234567890",
+      "commits": 10,
+      "prs": 2,
+      "issues": 1,
+      "reviews": 3,
+      "totalScore": 23,
+      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "eligible": true,
+      "repos": ["OpenZeppelin/openzeppelin-contracts"]
+    },
+    {
+      "github": "dave",
+      "wallet": null,
+      "commits": 25,
+      "prs": 7,
+      "issues": 4,
+      "reviews": 10,
+      "totalScore": 71,
+      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "eligible": false,
+      "repos": ["ethereum/go-ethereum"]
+    },
+    {
+      "github": "eve",
+      "wallet": null,
+      "commits": 5,
+      "prs": 1,
+      "issues": 0,
+      "reviews": 2,
+      "totalScore": 12,
+      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "eligible": false,
+      "repos": ["foundry-rs/foundry"]
+    }
+  ]
+}

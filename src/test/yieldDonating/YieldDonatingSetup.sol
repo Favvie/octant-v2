@@ -5,7 +5,9 @@ import "forge-std/console2.sol";
 import {Test} from "forge-std/Test.sol";
 
 import {YieldDonatingStrategy as Strategy, ERC20} from "../../strategies/yieldDonating/YieldDonatingStrategy.sol";
-import {YieldDonatingStrategyFactory as StrategyFactory} from "../../strategies/yieldDonating/YieldDonatingStrategyFactory.sol";
+import {
+    YieldDonatingStrategyFactory as StrategyFactory
+} from "../../strategies/yieldDonating/YieldDonatingStrategyFactory.sol";
 import {IStrategyInterface} from "../../interfaces/IStrategyInterface.sol";
 import {ITokenizedStrategy} from "@octant-core/core/interfaces/ITokenizedStrategy.sol";
 

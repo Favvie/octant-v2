@@ -1,0 +1,40 @@
+{
+  "root": "0x66cf6e13520f475a680ae53236fde252f116b6e601dea9df7d31950f514136b4",
+  "totalLeaves": 3,
+  "generatedAt": "2025-11-07T23:31:37.749Z",
+  "leaves": [
+    {
+      "github": "charlie",
+      "wallet": "0x1234567890123456789012345678901234567890",
+      "score": 23,
+      "leaf": "0x569114296f4ba921906bdcf19d9fac74e34819b28a31f82b213b9036e7dd782c",
+      "proof": [
+        "0x2e7793b5e1649b64cc279423ad202311ff6aca6afb2dff4db48e65388c3051c7",
+        "0x966b28f8fe59e61a816c26390f41a2f7e2ceefd37149b5e01c669fd0a23bf59d"
+      ]
+    },
+    {
+      "github": "alice",
+      "wallet": "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      "score": 54,
+      "leaf": "0x2e7793b5e1649b64cc279423ad202311ff6aca6afb2dff4db48e65388c3051c7",
+      "proof": [
+        "0x569114296f4ba921906bdcf19d9fac74e34819b28a31f82b213b9036e7dd782c",
+        "0x966b28f8fe59e61a816c26390f41a2f7e2ceefd37149b5e01c669fd0a23bf59d"
+      ]
+    },
+    {
+      "github": "bob",
+      "wallet": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      "score": 36,
+      "leaf": "0x966b28f8fe59e61a816c26390f41a2f7e2ceefd37149b5e01c669fd0a23bf59d",
+      "proof": [
+        "0xe729e49a1f4eac456822669cbd86f92b238ee6cf34c5f3344c8c201a20e35fe5"
+      ]
+    }
+  ],
+  "verificationInfo": {
+    "contractInterface": "See MERKLE_TREE_USAGE.md for smart contract examples",
+    "howToVerify": "Use MerkleProof.verify(proof, root, leaf) in Solidity"
+  }
+}

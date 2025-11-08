@@ -1,0 +1,24 @@
+{
+  "name": "octant-contributor-tracker",
+  "version": "1.0.0",
+  "description": "GitHub contributor tracking for Octant rewards",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "track": "tsx github-tracker.ts",
+    "generate-merkle": "tsx generate-merkle.ts",
+    "verify-proof": "tsx verify-proof.ts",
+    "dev": "tsx watch github-tracker.ts"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.0.2",
+    "dotenv": "^16.3.1",
+    "merkletreejs": "^0.3.11",
+    "ethers": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
