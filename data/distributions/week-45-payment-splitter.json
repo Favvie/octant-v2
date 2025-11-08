@@ -1,0 +1,63 @@
+{
+  "config": {
+    "epochId": 45,
+    "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "assetSymbol": "USDC",
+    "decimals": 6,
+    "totalYield": "1000000000",
+    "strategy": "proportional",
+    "startTime": 1699564800,
+    "endTime": 0
+  },
+  "contributors": [
+    {
+      "github": "alice",
+      "wallet": "0x742d35cc6634c0532925a3b844bc454e4438f44e",
+      "shares": 54,
+      "percentage": 35.064935064935064
+    },
+    {
+      "github": "bob",
+      "wallet": "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+      "shares": 48,
+      "percentage": 31.16883116883117
+    },
+    {
+      "github": "charlie",
+      "wallet": "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
+      "shares": 32,
+      "percentage": 20.77922077922078
+    },
+    {
+      "github": "david",
+      "wallet": "0xbda5747bfd65f08deb54cb465eb87d40e51b197e",
+      "shares": 20,
+      "percentage": 12.987012987012985
+    }
+  ],
+  "totalShares": 154,
+  "deployment": {
+    "addresses": [
+      "0x742d35cc6634c0532925a3b844bc454e4438f44e",
+      "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199",
+      "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
+      "0xbda5747bfd65f08deb54cb465eb87d40e51b197e"
+    ],
+    "githubNames": [
+      "alice",
+      "bob",
+      "charlie",
+      "david"
+    ],
+    "shares": [
+      54,
+      48,
+      32,
+      20
+    ]
+  },
+  "stats": {
+    "totalContributors": 4,
+    "estimatedAmountPerShare": "6493506"
+  }
+}

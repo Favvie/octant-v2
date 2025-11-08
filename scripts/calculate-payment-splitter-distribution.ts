@@ -8,7 +8,11 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { ethers } from 'ethers';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface ContributorShare {
   github: string;
@@ -152,22 +156,22 @@ async function main() {
   const contributorShares: ContributorShare[] = [];
   const addresses: string[] = [];
   const githubNames: string[] = [];
-  const shares: number[] = [];
+  const sharesArray: number[] = [];
 
   contributors.forEach(contributor => {
-    const contributorShares = shareMap.get(contributor.github) || 0;
-    const percentage = (contributorShares / totalShares) * 100;
+    const shares = shareMap.get(contributor.github) || 0;
+    const percentage = (shares / totalShares) * 100;
 
     contributorShares.push({
       github: contributor.github,
       wallet: contributor.wallet.toLowerCase(),
-      shares: contributorShares,
+      shares: shares,
       percentage
     });
 
     addresses.push(contributor.wallet.toLowerCase());
     githubNames.push(contributor.github);
-    shares.push(contributorShares);
+    sharesArray.push(shares);
   });
 
   // Sort by shares descending
@@ -184,7 +188,7 @@ async function main() {
     deployment: {
       addresses,
       githubNames,
-      shares
+      shares: sharesArray
     },
     stats: {
       totalContributors: contributors.length,
@@ -232,8 +236,8 @@ async function main() {
   console.log(']');
   console.log('');
   console.log('shares = [');
-  shares.forEach((share, i) => {
-    console.log(`  ${share}${i < shares.length - 1 ? ',' : ''}`);
+  sharesArray.forEach((share, i) => {
+    console.log(`  ${share}${i < sharesArray.length - 1 ? ',' : ''}`);
   });
   console.log(']');
 }

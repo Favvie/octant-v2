@@ -1,15 +1,14 @@
 {
-  "lastUpdated": "2025-11-07T10:00:00.000Z",
   "config": {
     "timeFrame": {
-      "months": 6
+      "months": 1
     },
     "minScore": 5,
-    "trackedRepos": 8
+    "trackedRepos": 3
   },
   "stats": {
     "totalContributors": 5,
-    "eligibleContributors": 3
+    "eligibleContributors": 4
   },
   "contributors": [
     {
@@ -20,45 +19,45 @@
       "issues": 3,
       "reviews": 8,
       "totalScore": 54,
-      "lastUpdated": "2025-11-07T10:00:00.000Z",
       "eligible": true,
-      "repos": ["ethereum/go-ethereum", "foundry-rs/foundry"]
+      "repos": ["octant-v2"],
+      "lastUpdated": "2024-11-08"
     },
     {
       "github": "bob",
-      "wallet": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      "wallet": "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
       "commits": 15,
-      "prs": 3,
+      "prs": 8,
       "issues": 2,
       "reviews": 5,
-      "totalScore": 36,
-      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "totalScore": 48,
       "eligible": true,
-      "repos": ["ethereum/solidity"]
+      "repos": ["octant-v2"],
+      "lastUpdated": "2024-11-08"
     },
     {
       "github": "charlie",
-      "wallet": "0x1234567890123456789012345678901234567890",
+      "wallet": "0xdD2FD4581271e230360230F9337D5c0430Bf44C0",
       "commits": 10,
-      "prs": 2,
-      "issues": 1,
+      "prs": 3,
+      "issues": 5,
       "reviews": 3,
-      "totalScore": 23,
-      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "totalScore": 32,
       "eligible": true,
-      "repos": ["OpenZeppelin/openzeppelin-contracts"]
+      "repos": ["octant-v2"],
+      "lastUpdated": "2024-11-08"
     },
     {
-      "github": "dave",
-      "wallet": null,
-      "commits": 25,
-      "prs": 7,
-      "issues": 4,
-      "reviews": 10,
-      "totalScore": 71,
-      "lastUpdated": "2025-11-07T10:00:00.000Z",
-      "eligible": false,
-      "repos": ["ethereum/go-ethereum"]
+      "github": "david",
+      "wallet": "0xbDA5747bFD65F08deb54cb465eB87D40e51B197E",
+      "commits": 8,
+      "prs": 2,
+      "issues": 1,
+      "reviews": 2,
+      "totalScore": 20,
+      "eligible": true,
+      "repos": ["octant-v2"],
+      "lastUpdated": "2024-11-08"
     },
     {
       "github": "eve",
@@ -66,11 +65,11 @@
       "commits": 5,
       "prs": 1,
       "issues": 0,
-      "reviews": 2,
-      "totalScore": 12,
-      "lastUpdated": "2025-11-07T10:00:00.000Z",
+      "reviews": 1,
+      "totalScore": 10,
       "eligible": false,
-      "repos": ["foundry-rs/foundry"]
+      "repos": ["octant-v2"],
+      "lastUpdated": "2024-11-08"
     }
   ]
 }

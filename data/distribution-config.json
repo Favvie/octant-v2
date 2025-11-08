@@ -1,0 +1,10 @@
+{
+  "epochId": 45,
+  "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "assetSymbol": "USDC",
+  "decimals": 6,
+  "totalYield": "1000000000",
+  "strategy": "proportional",
+  "startTime": 1699564800,
+  "endTime": 0
+}
