@@ -2,13 +2,13 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
-import { EcosystemLeadNFT } from "../../nft/EcosystemLeadNFT.sol";
-import { EcosystemLeadVoting } from "../../mechanisms/EcosystemLeadVoting.sol";
-import { EcosystemGovernanceExecutor } from "../../governance/EcosystemGovernanceExecutor.sol";
-import { TokenizedAllocationMechanism } from "../../../dependencies/octant-v2-core/src/mechanisms/TokenizedAllocationMechanism.sol";
-import { AllocationConfig } from "../../../dependencies/octant-v2-core/src/mechanisms/BaseAllocationMechanism.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { ERC20Mock } from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
+import {EcosystemLeadNFT} from "../../nft/EcosystemLeadNFT.sol";
+import {EcosystemLeadVoting} from "../../mechanisms/EcosystemLeadVoting.sol";
+import {EcosystemGovernanceExecutor} from "../../governance/EcosystemGovernanceExecutor.sol";
+import {AllocationConfig} from "@octant-core/mechanisms/mechanism/QuadraticVotingMechanism.sol";
+import {TokenizedAllocationMechanism} from "@octant-core/mechanisms/TokenizedAllocationMechanism.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ERC20Mock} from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
 /**
  * @title Ecosystem Lead Governance Test
@@ -40,14 +40,11 @@ contract EcosystemLeadGovernanceTest is Test {
         // Deploy governance token
         governanceToken = new ERC20Mock();
 
-        // Deploy executor (temporarily owned by owner)
-        executor = new EcosystemGovernanceExecutor(address(0), owner);
-
-        // Deploy NFT (owned by executor)
+        // Deploy NFT (initially owned by owner)
         vm.prank(owner);
-        nft = new EcosystemLeadNFT(address(executor), "ipfs://base/");
+        nft = new EcosystemLeadNFT(owner, "ipfs://base/");
 
-        // Redeploy executor with NFT address
+        // Deploy executor with NFT address (owned by owner)
         executor = new EcosystemGovernanceExecutor(address(nft), owner);
 
         // Transfer NFT ownership to executor
@@ -140,7 +137,7 @@ contract EcosystemLeadGovernanceTest is Test {
     function test_Voting_LeadCanSignup() public {
         vm.startPrank(lead1);
         governanceToken.approve(address(voting), 1000e18);
-        voting.signup(1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
         vm.stopPrank();
 
         // Verify voting power
@@ -154,7 +151,7 @@ contract EcosystemLeadGovernanceTest is Test {
         vm.startPrank(nonLead);
         governanceToken.approve(address(voting), 1000e18);
         vm.expectRevert();
-        voting.signup(1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
         vm.stopPrank();
     }
 
@@ -219,10 +216,10 @@ contract EcosystemLeadGovernanceTest is Test {
         newLeads[1] = address(0x106);
 
         vm.prank(owner);
-        uint256[] memory tokenIds = executor.mintEcosystemLead(newLeads[0]);
+        uint256 tokenId1 = executor.mintEcosystemLead(newLeads[0]);
 
         vm.prank(owner);
-        executor.mintEcosystemLead(newLeads[1]);
+        uint256 tokenId2 = executor.mintEcosystemLead(newLeads[1]);
 
         assertEq(nft.totalMembers(), 5);
         assertTrue(nft.isLead(newLeads[0]));
@@ -240,9 +237,7 @@ contract EcosystemLeadGovernanceTest is Test {
 
     function test_NFT_UpdateBaseURI() public {
         vm.prank(owner);
-        executor.executeAction(
-            address(nft), abi.encodeWithSignature("setBaseURI(string)", "https://new-uri/"), 0
-        );
+        executor.executeAction(address(nft), abi.encodeWithSignature("setBaseURI(string)", "https://new-uri/"), 0);
 
         string memory uri = nft.tokenURI(1);
         assertEq(uri, "https://new-uri/1");
@@ -255,31 +250,49 @@ contract EcosystemLeadGovernanceTest is Test {
     function test_Voting_ProposeContributorFunding() public {
         address contributor = address(0x300);
 
-        // Lead1 creates proposal
-        vm.prank(lead1);
-        uint256 pid = voting.proposeContributorFunding(contributor, 1000e18, "Great contribution!");
+        // Lead1 signs up with governance tokens
+        vm.startPrank(lead1);
+        governanceToken.approve(address(voting), 1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
 
-        // Verify proposal exists (would need to check via events or state)
-        // For now, just ensure no revert
-        assertTrue(pid > 0 || pid == 0); // Placeholder assertion
+        // Lead1 creates proposal
+        uint256 pid = voting.proposeContributorFunding(contributor, 1000e18, "Great contribution!");
+        vm.stopPrank();
+
+        // Verify proposal was created
+        assertTrue(pid > 0);
     }
 
     function test_Voting_ProposeStrategicDecision() public {
         address treasury = address(0x400);
 
-        vm.prank(lead1);
-        uint256 pid = voting.proposeStrategicDecision(treasury, "Allocate funds to marketing");
+        // Lead1 signs up with governance tokens
+        vm.startPrank(lead1);
+        governanceToken.approve(address(voting), 1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
 
-        assertTrue(pid > 0 || pid == 0); // Placeholder assertion
+        // Lead1 creates proposal
+        uint256 pid = voting.proposeStrategicDecision(treasury, "Allocate funds to marketing");
+        vm.stopPrank();
+
+        // Verify proposal was created
+        assertTrue(pid > 0);
     }
 
     function test_Voting_ProposeNewLead() public {
         address nominee = address(0x500);
 
-        vm.prank(lead1);
-        uint256 pid = voting.proposeNewLead(nominee, "Active contributor, proven track record");
+        // Lead1 signs up with governance tokens
+        vm.startPrank(lead1);
+        governanceToken.approve(address(voting), 1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
 
-        assertTrue(pid > 0 || pid == 0); // Placeholder assertion
+        // Lead1 creates proposal
+        uint256 pid = voting.proposeNewLead(nominee, "Active contributor, proven track record");
+        vm.stopPrank();
+
+        // Verify proposal was created
+        assertTrue(pid > 0);
     }
 
     function test_Voting_ProposeNewLeadRevertAlreadyHasNFT() public {
@@ -311,7 +324,7 @@ contract EcosystemLeadGovernanceTest is Test {
 
     function test_Executor_ReceiveETH() public {
         vm.deal(address(this), 10 ether);
-        (bool success,) = address(executor).call{ value: 1 ether }("");
+        (bool success, ) = address(executor).call{value: 1 ether}("");
         assertTrue(success);
         assertEq(address(executor).balance, 1 ether);
     }
@@ -320,5 +333,5 @@ contract EcosystemLeadGovernanceTest is Test {
     // HELPER FUNCTIONS
     // ============================================
 
-    receive() external payable { }
+    receive() external payable {}
 }

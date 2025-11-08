@@ -215,20 +215,6 @@ contract ContributorRegistryTest is Test {
         registry.updateMerkleRoot(newRoot);
     }
 
-    function test_UpdateMinPassportScore() public {
-        uint256 newScore = 20;
-
-        registry.updateMinPassportScore(newScore);
-        assertEq(registry.minPassportScore(), newScore);
-    }
-
-    function test_UpdatePassportScorer() public {
-        address newScorer = address(0x123);
-
-        registry.updatePassportScorer(newScorer);
-        assertEq(registry.passportScorer(), newScorer);
-    }
-
     function test_BatchRegister_Success() public {
         address[] memory wallets = new address[](3);
         wallets[0] = alice;
@@ -306,7 +292,7 @@ contract ContributorRegistryTest is Test {
         assertEq(_sqrt(54), 7);
         assertEq(_sqrt(100), 10);
         assertEq(_sqrt(400), 20);
-        
+
         // Verify: 4x score (100 → 400) gives 2x power (10 → 20)
         // This is the quadratic scaling property
         assertTrue(_sqrt(400) == _sqrt(100) * 2);

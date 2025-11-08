@@ -5,10 +5,10 @@ import "forge-std/Script.sol";
 import {EcosystemLeadNFT} from "../src/nft/EcosystemLeadNFT.sol";
 import {EcosystemLeadVoting} from "../src/mechanisms/EcosystemLeadVoting.sol";
 import {EcosystemGovernanceExecutor} from "../src/governance/EcosystemGovernanceExecutor.sol";
-import {
-    TokenizedAllocationMechanism
-} from "../dependencies/octant-v2-core/src/mechanisms/TokenizedAllocationMechanism.sol";
-import {AllocationConfig} from "../dependencies/octant-v2-core/src/mechanisms/BaseAllocationMechanism.sol";
+
+import {AllocationConfig} from "@octant-core/mechanisms/mechanism/QuadraticVotingMechanism.sol";
+
+import {TokenizedAllocationMechanism} from "@octant-core/mechanisms/TokenizedAllocationMechanism.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**

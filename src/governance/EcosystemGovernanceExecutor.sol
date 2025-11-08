@@ -74,6 +74,13 @@ contract EcosystemGovernanceExecutor is Ownable {
         _;
     }
 
+    modifier onlyOwnerOrAuthorizedVoter() {
+        if (msg.sender != owner() && !authorizedVoters[msg.sender]) {
+            revert NotAuthorizedVoter(msg.sender);
+        }
+        _;
+    }
+
     // ============================================
     // CONSTRUCTOR
     // ============================================
@@ -115,11 +122,11 @@ contract EcosystemGovernanceExecutor is Ownable {
 
     /**
      * @notice Mint Ecosystem Lead NFT to address
-     * @dev Called by authorized voting contract after successful proposal
+     * @dev Called by owner or authorized voting contract
      * @param recipient Address to receive NFT
      * @return tokenId Minted token ID
      */
-    function mintEcosystemLead(address recipient) external onlyAuthorizedVoter returns (uint256) {
+    function mintEcosystemLead(address recipient) external onlyOwnerOrAuthorizedVoter returns (uint256) {
         uint256 tokenId = ecosystemLeadNFT.mint(recipient);
         emit NFTMinted(recipient, tokenId);
         return tokenId;
@@ -127,10 +134,10 @@ contract EcosystemGovernanceExecutor is Ownable {
 
     /**
      * @notice Revoke Ecosystem Lead NFT from address
-     * @dev Called by authorized voting contract after successful removal proposal
+     * @dev Called by owner or authorized voting contract
      * @param from Address to revoke NFT from
      */
-    function revokeEcosystemLead(address from) external onlyAuthorizedVoter {
+    function revokeEcosystemLead(address from) external onlyOwnerOrAuthorizedVoter {
         uint256 tokenId = ecosystemLeadNFT.addressToTokenId(from);
         ecosystemLeadNFT.revoke(from);
         emit NFTRevoked(from, tokenId);
@@ -138,7 +145,7 @@ contract EcosystemGovernanceExecutor is Ownable {
 
     /**
      * @notice Execute arbitrary governance action
-     * @dev Called by authorized voting contract for strategic decisions
+     * @dev Called by owner or authorized voting contract
      * @param target Contract to call
      * @param data Calldata for the call
      * @param value ETH value to send
@@ -148,7 +155,7 @@ contract EcosystemGovernanceExecutor is Ownable {
         address target,
         bytes calldata data,
         uint256 value
-    ) external onlyAuthorizedVoter returns (bytes memory) {
+    ) external onlyOwnerOrAuthorizedVoter returns (bytes memory) {
         (bool success, bytes memory returnData) = target.call{value: value}(data);
 
         if (!success) {
@@ -170,7 +177,7 @@ contract EcosystemGovernanceExecutor is Ownable {
         address[] calldata targets,
         bytes[] calldata datas,
         uint256[] calldata values
-    ) external onlyAuthorizedVoter {
+    ) external onlyOwnerOrAuthorizedVoter {
         require(targets.length == datas.length && targets.length == values.length, "Array length mismatch");
 
         for (uint256 i = 0; i < targets.length; i++) {
