@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.20;
 
-import { QuadraticVotingMechanism } from "../../dependencies/octant-v2-core/src/mechanisms/mechanism/QuadraticVotingMechanism.sol";
-import { AllocationConfig } from "../../dependencies/octant-v2-core/src/mechanisms/BaseAllocationMechanism.sol";
-import { TokenizedAllocationMechanism } from "../../dependencies/octant-v2-core/src/mechanisms/TokenizedAllocationMechanism.sol";
+import { QuadraticVotingMechanism } from "@octant-core/mechanisms/mechanism/QuadraticVotingMechanism.sol";
+import { AllocationConfig } from "@octant-core/mechanisms/BaseAllocationMechanism.sol";
+import { TokenizedAllocationMechanism } from "@octant-core/mechanisms/TokenizedAllocationMechanism.sol";
 import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import { IERC20Metadata } from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 

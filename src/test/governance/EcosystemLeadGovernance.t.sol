@@ -5,8 +5,8 @@ import "forge-std/Test.sol";
 import { EcosystemLeadNFT } from "../../nft/EcosystemLeadNFT.sol";
 import { EcosystemLeadVoting } from "../../mechanisms/EcosystemLeadVoting.sol";
 import { EcosystemGovernanceExecutor } from "../../governance/EcosystemGovernanceExecutor.sol";
-import { TokenizedAllocationMechanism } from "../../../dependencies/octant-v2-core/src/mechanisms/TokenizedAllocationMechanism.sol";
-import { AllocationConfig } from "../../../dependencies/octant-v2-core/src/mechanisms/BaseAllocationMechanism.sol";
+import { TokenizedAllocationMechanism } from "@octant-core/mechanisms/TokenizedAllocationMechanism.sol";
+import { AllocationConfig } from "@octant-core/mechanisms/BaseAllocationMechanism.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ERC20Mock } from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
@@ -140,7 +140,7 @@ contract EcosystemLeadGovernanceTest is Test {
     function test_Voting_LeadCanSignup() public {
         vm.startPrank(lead1);
         governanceToken.approve(address(voting), 1000e18);
-        voting.signup(1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
         vm.stopPrank();
 
         // Verify voting power
@@ -154,7 +154,7 @@ contract EcosystemLeadGovernanceTest is Test {
         vm.startPrank(nonLead);
         governanceToken.approve(address(voting), 1000e18);
         vm.expectRevert();
-        voting.signup(1000e18);
+        TokenizedAllocationMechanism(address(voting)).signup(1000e18);
         vm.stopPrank();
     }
 
