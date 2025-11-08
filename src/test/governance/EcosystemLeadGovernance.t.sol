@@ -5,8 +5,8 @@ import "forge-std/Test.sol";
 import { EcosystemLeadNFT } from "../../nft/EcosystemLeadNFT.sol";
 import { EcosystemLeadVoting } from "../../mechanisms/EcosystemLeadVoting.sol";
 import { EcosystemGovernanceExecutor } from "../../governance/EcosystemGovernanceExecutor.sol";
-import { TokenizedAllocationMechanism } from "@octant-core/mechanisms/TokenizedAllocationMechanism.sol";
-import { AllocationConfig } from "@octant-core/mechanisms/BaseAllocationMechanism.sol";
+import { TokenizedAllocationMechanism } from "octant-v2-core/src/mechanisms/TokenizedAllocationMechanism.sol";
+import { AllocationConfig } from "octant-v2-core/src/mechanisms/BaseAllocationMechanism.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ERC20Mock } from "@openzeppelin/contracts/mocks/token/ERC20Mock.sol";
 
@@ -219,10 +219,10 @@ contract EcosystemLeadGovernanceTest is Test {
         newLeads[1] = address(0x106);
 
         vm.prank(owner);
-        uint256[] memory tokenIds = executor.mintEcosystemLead(newLeads[0]);
+        uint256 tokenId1 = executor.mintEcosystemLead(newLeads[0]);
 
         vm.prank(owner);
-        executor.mintEcosystemLead(newLeads[1]);
+        uint256 tokenId2 = executor.mintEcosystemLead(newLeads[1]);
 
         assertEq(nft.totalMembers(), 5);
         assertTrue(nft.isLead(newLeads[0]));
