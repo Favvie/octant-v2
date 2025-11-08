@@ -15,7 +15,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  * - One-time registration per contributor
  * - Stores contributor info (GitHub, score, voting power)
  * - Updatable Merkle root for new contributor batches
- * - Integration with Gitcoin Passport for Sybil resistance
+ * - Gas-efficient storage with minimal on-chain data
  */
 contract ContributorRegistry is Ownable, ReentrancyGuard {
     /*//////////////////////////////////////////////////////////////
@@ -46,12 +46,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
     /// @notice Mapping to prevent duplicate GitHub usernames
     mapping(string => address) public githubToAddress;
 
-    /// @notice Minimum Gitcoin Passport score required (optional, 0 = disabled)
-    uint256 public minPassportScore;
-
-    /// @notice Address of Gitcoin Passport scorer (optional)
-    address public passportScorer;
-
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -59,10 +53,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
     event ContributorRegistered(address indexed wallet, string github, uint256 score, uint256 votingPower);
 
     event MerkleRootUpdated(bytes32 indexed oldRoot, bytes32 indexed newRoot);
-
-    event MinPassportScoreUpdated(uint256 oldScore, uint256 newScore);
-
-    event PassportScorerUpdated(address indexed oldScorer, address indexed newScorer);
 
     /*//////////////////////////////////////////////////////////////
                                 ERRORS
@@ -72,7 +62,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
     error InvalidProof();
     error NotRegistered();
     error GithubAlreadyClaimed();
-    error PassportScoreTooLow();
     error InvalidGithub();
     error InvalidScore();
 
@@ -122,14 +111,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
         bytes32 leaf = _createLeaf(msg.sender, github, score);
         if (!MerkleProof.verify(proof, merkleRoot, leaf)) {
             revert InvalidProof();
-        }
-
-        // Optional: Check Gitcoin Passport score
-        if (minPassportScore > 0 && passportScorer != address(0)) {
-            uint256 passportScore = _getPassportScore(msg.sender);
-            if (passportScore < minPassportScore) {
-                revert PassportScoreTooLow();
-            }
         }
 
         // Calculate voting power (using square root for diminishing returns)
@@ -280,26 +261,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
         emit MerkleRootUpdated(oldRoot, newRoot);
     }
 
-    /**
-     * @notice Update minimum Gitcoin Passport score
-     * @param newScore New minimum score (0 to disable)
-     */
-    function updateMinPassportScore(uint256 newScore) external onlyOwner {
-        uint256 oldScore = minPassportScore;
-        minPassportScore = newScore;
-        emit MinPassportScoreUpdated(oldScore, newScore);
-    }
-
-    /**
-     * @notice Update Gitcoin Passport scorer address
-     * @param newScorer New scorer address (address(0) to disable)
-     */
-    function updatePassportScorer(address newScorer) external onlyOwner {
-        address oldScorer = passportScorer;
-        passportScorer = newScorer;
-        emit PassportScorerUpdated(oldScorer, newScorer);
-    }
-
     /*//////////////////////////////////////////////////////////////
                         INTERNAL FUNCTIONS
     //////////////////////////////////////////////////////////////*/
@@ -325,29 +286,6 @@ contract ContributorRegistry is Ownable, ReentrancyGuard {
         // Simple square root for quadratic voting
         // votingPower = sqrt(score)
         return sqrt(score);
-    }
-
-    /**
-     * @notice Get Gitcoin Passport score for an address
-     * @param wallet Address to check
-     * @return uint256 Passport score
-     */
-    function _getPassportScore(address wallet) internal view returns (uint256) {
-        if (passportScorer == address(0)) {
-            return 0;
-        }
-
-        // Call Gitcoin Passport Scorer contract
-        // Interface: function getScore(address) external view returns (uint256)
-        (bool success, bytes memory data) = passportScorer.staticcall(
-            abi.encodeWithSignature("getScore(address)", wallet)
-        );
-
-        if (!success || data.length == 0) {
-            return 0;
-        }
-
-        return abi.decode(data, (uint256));
     }
 
     /**
