@@ -8,7 +8,9 @@
     "track": "tsx github-tracker.ts",
     "generate-merkle": "tsx generate-merkle.ts",
     "verify-proof": "tsx verify-proof.ts",
-    "dev": "tsx watch github-tracker.ts"
+    "dev": "tsx watch github-tracker.ts",
+    "calculate-distribution": "tsx calculate-yield-distribution.ts",
+    "generate-distribution-merkle": "tsx generate-distribution-merkle.ts"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
