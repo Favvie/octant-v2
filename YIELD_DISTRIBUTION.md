@@ -1,14 +1,41 @@
 # Yield Distribution System
 
-A gas-efficient, Merkle-proof-based system for distributing yield generated from Aave vaults to contributors.
+A gas-efficient, Merkle-proof-based system for **weekly** distribution of yield generated from Aave vaults to active GitHub contributors.
 
 ## Overview
 
-The yield distribution system consists of three main components:
+The yield distribution system is designed for **dynamic, weekly distributions** where:
+- 🔄 **Contributors change each week** based on GitHub activity
+- 💰 **Yield amount varies** based on actual Aave returns
+- 📊 **No pre-registration required** - new contributors can join anytime
+- ⏱️ **Claims never expire** - contributors can claim weeks later
 
-1. **YieldDistributor Contract** - Smart contract for managing distribution epochs and claiming
-2. **Distribution Scripts** - Off-chain scripts for calculating allocations and generating Merkle trees
-3. **Direct Claiming** - Contributors claim their yield using Merkle proofs (no pre-registration required)
+### System Components
+
+1. **YieldDistributor Contract** - Smart contract for managing weekly distribution epochs
+2. **Automated Scripts** - Off-chain automation for tracking contributions and calculating allocations
+3. **Merkle Proofs** - Gas-efficient verification (O(log n) vs storing all allocations)
+4. **Direct Claiming** - Contributors claim their yield using Merkle proofs
+
+## Weekly Workflow at a Glance
+
+```
+Monday 9:00 AM UTC (Automated):
+├─ 1. Track GitHub contributions from past week
+├─ 2. Query strategy for yield generated this week
+├─ 3. Calculate allocation per contributor
+├─ 4. Generate Merkle tree and individual proofs
+└─ 5. Create deployment instructions
+
+Tuesday (Manual):
+├─ 6. Review and approve allocations
+├─ 7. Transfer yield to YieldDistributor
+├─ 8. Create on-chain epoch
+└─ 9. Notify contributors with their proof files
+
+Week N Contributors:
+└─ Claim their share anytime (no expiry)
+```
 
 ## Architecture
 
@@ -129,7 +156,110 @@ npm run generate-distribution-merkle [epochId]
 - `data/merkle-trees/epoch-{epochId}-root.txt` - Just the root hash
 - `data/merkle-trees/epoch-{epochId}-proofs/{github}.json` - Individual proof files
 
-## Complete Workflow
+### 3. Automated Weekly Distribution
+
+**Script**: `scripts/weekly-distribution.ts`
+
+**Purpose**: Complete automation of the weekly distribution workflow.
+
+**What it does**:
+1. Tracks GitHub contributions from the past 7 days
+2. Queries for weekly yield amount
+3. Creates distribution configuration
+4. Calculates allocations
+5. Generates Merkle tree and proofs
+6. Outputs deployment instructions
+
+**Setup**:
+```bash
+# Set environment variables
+export WEEKLY_YIELD_AMOUNT="1000000000"  # Amount in wei (1000 USDC)
+export ASSET_ADDRESS="0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+export ASSET_SYMBOL="USDC"
+export ASSET_DECIMALS="6"
+export ALLOCATION_STRATEGY="equal"  # or "proportional"
+```
+
+**Run manually**:
+```bash
+cd scripts
+npm run weekly-distribution
+```
+
+**Automate with GitHub Actions**:
+
+The repository includes a GitHub Actions workflow (`.github/workflows/weekly-distribution.yml`) that:
+- Runs every Monday at 9:00 AM UTC
+- Prepares the week's distribution automatically
+- Creates a PR with the data for review
+- Can be manually triggered via workflow_dispatch
+
+**Required Secrets/Variables**:
+- `GITHUB_TOKEN` (automatically provided)
+- `WEEKLY_YIELD_AMOUNT` (secret) - Can be updated weekly or queried from contract
+- `ASSET_ADDRESS` (variable) - USDC/DAI/etc address
+- `ASSET_SYMBOL` (variable) - "USDC", "DAI", etc.
+- `ASSET_DECIMALS` (variable) - Token decimals (6, 18, etc.)
+- `ALLOCATION_STRATEGY` (variable) - "equal" or "proportional"
+
+**Output**:
+- All distribution files (allocations, Merkle tree, proofs)
+- `data/week-{N}-deployment.txt` - Step-by-step deployment instructions
+- Pull Request with all data for review
+
+## Automated Weekly Workflow
+
+### Option 1: GitHub Actions (Recommended)
+
+The automated workflow runs every Monday at 9:00 AM UTC:
+
+1. **Monday Morning** - GitHub Actions automatically:
+   - Tracks GitHub contributions from past week
+   - Calculates yield allocation
+   - Generates Merkle tree
+   - Creates PR with distribution data
+
+2. **Monday/Tuesday** - Manual review:
+   - Review the auto-generated PR
+   - Verify allocations look correct
+   - Merge the PR
+
+3. **Tuesday** - On-chain deployment:
+   - Transfer yield to YieldDistributor
+   - Create epoch using Merkle root from the PR
+   - Commit transaction
+
+4. **Tuesday/Wednesday** - Notify contributors:
+   - Share proof files (from `data/merkle-trees/epoch-{N}-proofs/`)
+   - Post announcement with claim instructions
+   - Contributors can claim anytime
+
+### Option 2: Manual Weekly Process
+
+Run the automation script manually:
+
+```bash
+# Every Monday
+cd scripts
+export WEEKLY_YIELD_AMOUNT="1000000000"
+npm run weekly-distribution
+
+# Review output files
+cat data/week-$(date +%U)-deployment.txt
+
+# Follow deployment instructions
+```
+
+### Option 3: Cron Job
+
+Add to your server's crontab:
+
+```bash
+# Run every Monday at 9:00 AM
+0 9 * * 1 cd /path/to/octant-v2/scripts && npm run weekly-distribution
+```
+
+## Complete Workflow (Manual)
 
 ### Step 1: Setup Contributors
 
