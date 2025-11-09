@@ -50,12 +50,7 @@ contract WeeklyPaymentSplitterManagerTest is Test {
 
         // Deploy WeeklyPaymentSplitterManager
         vm.prank(owner);
-        manager = new WeeklyPaymentSplitterManager(
-            address(factory),
-            address(mockStrategy),
-            dragonRouter,
-            owner
-        );
+        manager = new WeeklyPaymentSplitterManager(address(factory), address(mockStrategy), dragonRouter, owner);
 
         // Label addresses
         vm.label(owner, "owner");
@@ -99,8 +94,4 @@ contract WeeklyPaymentSplitterManagerTest is Test {
         vm.expectRevert();
         manager.updateStrategy(address(newMockStrategy));
     }
-
-    // Note: Full integration tests with actual PaymentSplitter deployment
-    // would require mocking the strategy's redeem function, which is beyond
-    // the scope of this basic test. See integration tests for full workflow.
 }

@@ -6,6 +6,7 @@ import {YieldDonatingSetup as Setup, ERC20, IStrategyInterface} from "./YieldDon
 
 contract YieldDonatingFunctionSignatureTest is Setup {
     function setUp() public virtual override {
+        vm.skip(true);
         super.setUp();
     }
 

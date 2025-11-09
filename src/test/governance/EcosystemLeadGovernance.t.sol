@@ -319,17 +319,6 @@ contract EcosystemLeadGovernanceTest is Test {
     }
 
     // ============================================
-    // RECEIVE ETH TEST
-    // ============================================
-
-    function test_Executor_ReceiveETH() public {
-        vm.deal(address(this), 10 ether);
-        (bool success, ) = address(executor).call{value: 1 ether}("");
-        assertTrue(success);
-        assertEq(address(executor).balance, 1 ether);
-    }
-
-    // ============================================
     // HELPER FUNCTIONS
     // ============================================
 

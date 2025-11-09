@@ -1,0 +1,33 @@
+{
+  "network": {
+    "name": "unknown",
+    "chainId": 8,
+    "rpcUrl": "https://virtual.mainnet.eu.rpc.tenderly.co/82c86106-662e-4d7f-a974-c311987358ff"
+  },
+  "aave": {
+    "poolAddress": "",
+    "assetAddress": "",
+    "assetSymbol": "DAI"
+  },
+  "roles": {
+    "management": "0xFDb60A0e05539aA30acba38813cF6123B8780b04",
+    "keeper": "0xFDb60A0e05539aA30acba38813cF6123B8780b04",
+    "emergencyAdmin": "0xFDb60A0e05539aA30acba38813cF6123B8780b04"
+  },
+  "strategy": {
+    "name": "Aave V3 Yield Donating Strategy",
+    "symbol": "aYield"
+  },
+  "contracts": {
+    "strategyFactory": null,
+    "strategy": null,
+    "weeklyPaymentSplitterManager": null,
+    "ecosystemLeadNFT": null,
+    "ecosystemLeadVoting": null,
+    "ecosystemGovernanceExecutor": null,
+    "contributorRegistry": null
+  },
+  "deploymentTimestamp": 1762694857790,
+  "deploymentBlockNumber": 23722227,
+  "deploymentTransactionHashes": {}
+}
